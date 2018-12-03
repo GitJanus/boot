@@ -3,29 +3,17 @@
 <configuration>
     <settings>
         <setting name="callSettersOnNulls" value="true"/>
-
         <setting name="cacheEnabled" value="true"/>
-
         <setting name="lazyLoadingEnabled" value="true"/>
-
         <setting name="aggressiveLazyLoading" value="true"/>
-
         <setting name="multipleResultSetsEnabled" value="true"/>
-
         <setting name="useColumnLabel" value="true"/>
-
         <setting name="useGeneratedKeys" value="false"/>
-
         <setting name="autoMappingBehavior" value="PARTIAL"/>
-
         <setting name="defaultExecutorType" value="SIMPLE"/>
-
         <setting name="mapUnderscoreToCamelCase" value="true"/>
-
         <setting name="localCacheScope" value="SESSION"/>
-
         <setting name="jdbcTypeForNull" value="NULL"/>
-
     </settings>
 
     <typeAliases>
