@@ -11,8 +11,12 @@ import java.util.List;
 @RestController
 public class HelloWorldController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public HelloWorldController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping("/hello")
     public String say(){
