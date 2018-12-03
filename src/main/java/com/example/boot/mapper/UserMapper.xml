@@ -123,7 +123,7 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="getUserList" resultMap="BaseResultMap">
+    <select id="getUserList" resultType="com.example.boot.model.User">
         select
         <include refid="Base_Column_List"/>
         from sys_user
