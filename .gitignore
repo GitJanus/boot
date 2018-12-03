@@ -1,11 +1,22 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
+# Eclipse project files
+.classpath
+.project
+.settings/
 
-# IntelliJ project files
-.idea
+
+# Intellij project files
 *.iml
-out
-gen
+*.ipr
+.idea/
+webapp/src/main/webapp/js/bower_components/
+
+# Others
+target/
+logs/
+
+/webapp/node/
+/webapp/node_modules/
+/webapp/rev-manifest.json
+*.war
 .gitignore
-.idea/workspace.xml
+demo.iml
