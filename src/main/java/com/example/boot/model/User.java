@@ -1,18 +1,22 @@
 package com.example.boot.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Date;
 
 public class User {
     private Integer id;
-
+    @JsonIgnore
     private String loginName;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
     private String password;
 
     private String salt;
-
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss a",locale = "zh",timezone = "GMT+8")
     private Date addtime;
 
     private Boolean disabled;
