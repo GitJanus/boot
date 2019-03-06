@@ -21,6 +21,13 @@ public class User {
 
     private Boolean disabled;
 
+    private Integer age;
+    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss a", locale="zh", timezone="GMT+8")
+    private Date birthday;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String desc;
+
     public Integer getId() {
         return id;
     }
@@ -75,5 +82,29 @@ public class User {
 
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }
