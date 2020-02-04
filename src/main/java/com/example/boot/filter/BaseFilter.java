@@ -13,8 +13,8 @@ public class BaseFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
        System.out.println("filter start...");
        HttpServletRequest req = (HttpServletRequest) servletRequest;
-        X509Certificate[] certs = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
-        System.out.println(Arrays.toString(certs));
+       X509Certificate[] certs = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
+       System.out.println(Arrays.toString(certs));
     }
 
     @Override

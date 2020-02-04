@@ -2,10 +2,72 @@ package com.example.boot.utils;
 
 import jcifs.smb.SmbFile;
 import jcifs.smb.SmbFileOutputStream;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import java.io.*;
 
 public class FileUtils {
+
+    /**
+     * 将文件转成base64 字符串
+     * @ param path文件路径
+     * @return  *
+     * @ throws Exception
+     */
+
+    public static String encodeBase64File(String path) throws Exception {
+        File file = new File(path);
+        FileInputStream inputFile = new FileInputStream(file);
+        byte[] buffer = new byte[(int) file.length()];
+        inputFile.read(buffer);
+        inputFile.close();
+        return new BASE64Encoder().encode(buffer);
+
+    }
+
+    /**
+     * 将base64字符解码保存文件
+     * @ param base64Code
+     * @ param targetPath
+     * @ throws Exception
+     */
+
+    public static void decoderBase64File(String base64Code, String targetPath) throws Exception {
+        byte[] buffer = new BASE64Decoder().decodeBuffer(base64Code);
+        FileOutputStream out = new FileOutputStream(targetPath);
+        out.write(buffer);
+        out.close();
+
+    }
+
+    /**
+     * 将base64字符保存文本文件
+     * @ param base64Code
+     * @ param targetPath
+     * @ throws Exception
+     */
+
+    public static void toFile(String base64Code, String targetPath) throws Exception {
+
+        byte[] buffer = base64Code.getBytes();
+        FileOutputStream out = new FileOutputStream(targetPath);
+        out.write(buffer);
+        out.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+            String base64Code = "MIICSDCCAbOgAwIBAgIIUnAoYpZc0rswCwYJKoZIhvcNAQEFMBoxCzAJBgNVBAMMAnpiMQswCQYDVQQGEwJjbjAeFw03MDAxMDEwNTM2NDBaFw03MDAxMDEwNTM2NDBaMBoxCzAJBgNVBAMMAnpiMQswCQYDVQQGEwJjbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAzQMRJZ/HDOJBR5LZMM0/sP9nPD5NywH9Qas1BrmJEYnjFbkVU7Znd3MOb38TfWaeVlc8NV2t0fdrt4RKSi5wlIuCMZo9Lu1GojqZiruNiw35JYP4uosRbRhUr23Xt1AuNIozCCKxUTFeudhcTXOYszGcIdbTz9tZPJdTtcKzczkCAwEAAaOBmjCBlzCBlAYDVR0OBIGMMIGJAoGBAM0DESWfxwziQUeS2TDNP7D/Zzw+TcsB/UGrNQa5iRGJ4xW5FVO2Z3dzDm9/E31mnlZXPDVdrdH3a7eESkoucJSLgjGaPS7tRqI6mYq7jYsN+SWD+LqLEW0YVK9t17dQLjSKMwgisVExXrnYXE1zmLMxnCHW08/bWTyXU7XCs3M5AgMBAAEwCwYJKoZIhvcNAQEFA4GBAKbqzIWngLgGbX+F070UgFpl3h18XWm6bbmPsMA8mwL9TyuuNDjo92ejTRPVoovY+Imv7yhkv2daWG8wAwqk3FoYaZYDNPvAbBiQyk6X+R/msqUeJ85x0MddNg1z3/9WOFeYWx9X6ekXPF+ykhFzGXlEymOdCd+H/Ta4ksMafT/Z";//encodeBase64File("D:/0101-2011-qqqq.tif");
+            System.out.println(base64Code);
+            decoderBase64File(base64Code, "D:/2.cer");
+            toFile(base64Code, "D:\\three.cer");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public static void copyFile(File localFile) throws IOException {
         try{
