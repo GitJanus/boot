@@ -13,6 +13,8 @@ webapp/src/main/webapp/js/bower_components/
 # Others
 target/
 logs/
+node_modules/
+classes/
 
 /webapp/node/
 /webapp/node_modules/

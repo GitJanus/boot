@@ -1,7 +1,6 @@
 package com.example.boot.utils;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -14,6 +13,7 @@ import sun.misc.BASE64Decoder;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -33,16 +33,13 @@ public class GenerateCertificateUtil {
         // 密钥长度 1024
         generator.initialize(1024);
         // 证书中的密钥 公钥和私钥
-        KeyPair keyPair = generator.generateKeyPair();
-        return keyPair;
+        return generator.generateKeyPair();
     }
 
     /**
-     * @param password  密码
      * @param issuerStr 颁发机构信息
      * @param subjectStr 使用者信息
      * @param certificateCRL 颁发地址
-     * @return
      */
     public static Map<String, byte[]> createCert(String password, String issuerStr, String subjectStr, String certificateCRL) {
 
@@ -71,7 +68,7 @@ public class GenerateCertificateUtil {
             if (out != null) {
                 try {
                     out.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -79,12 +76,9 @@ public class GenerateCertificateUtil {
     }
 
     /**
-     * @param issuerStr
-     * @param subjectStr
-     * @param result
-     * @param certificateCRL
-     * @param extensions
-     * @return
+     * @param issuerStr 颁发者
+     * @param subjectStr 主题
+     * @param certificateCRL crl
      */
     public static Certificate generateCertificateV3(String issuerStr, String subjectStr,Map<String, byte[]> result,
                                                     String certificateCRL, List<Extension> extensions) {
@@ -99,7 +93,7 @@ public class GenerateCertificateUtil {
             Calendar rightNow = Calendar.getInstance();
             rightNow.setTime(notBefore);
             // 日期加1年
-            rightNow.add(Calendar.YEAR, 1);
+            rightNow.add(Calendar.YEAR, 100);
             Date notAfter = rightNow.getTime();
             // 证书序列号
             BigInteger serial = BigInteger.probablePrime(256, new Random());
@@ -116,24 +110,16 @@ public class GenerateCertificateUtil {
             DistributionPointName distributionPoint = new DistributionPointName( seneralNames);
             DistributionPoint[] points = new DistributionPoint[1];
             points[0] = new DistributionPoint(distributionPoint, null, null);
-            CRLDistPoint cRLDistPoint = new CRLDistPoint(points);
-            builder.addExtension(cRLDistributionPoints, true, cRLDistPoint);
-            // 用途
-            ASN1ObjectIdentifier keyUsage = new ASN1ObjectIdentifier( "2.5.29.15");
-            // | KeyUsage.nonRepudiation | KeyUsage.keyCertSign
-            builder.addExtension(keyUsage, true, new KeyUsage( KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
-            // 基本限制 X509Extension.java
-            ASN1ObjectIdentifier basicConstraints = new ASN1ObjectIdentifier("2.5.29.19");
-            builder.addExtension(basicConstraints, true, new BasicConstraints(true));
+//            CRLDistPoint cRLDistPoint = new CRLDistPoint(points);
+//            builder.addExtension(cRLDistributionPoints, true, cRLDistPoint);
+//            // 用途
+//            ASN1ObjectIdentifier keyUsage = new ASN1ObjectIdentifier( "2.5.29.15");
+//            // | KeyUsage.nonRepudiation | KeyUsage.keyCertSign
+//            builder.addExtension(keyUsage, true, new KeyUsage( KeyUsage.digitalSignature | KeyUsage.keyEncipherment));
+//            // 基本限制 X509Extension.java
+//            ASN1ObjectIdentifier basicConstraints = new ASN1ObjectIdentifier("2.5.29.19");
+//            builder.addExtension(basicConstraints, true, new BasicConstraints(true));
             // privKey:使用自己的私钥进行签名，CA证书
-            if (extensions != null){
-                for (Extension ext : extensions) {
-                    builder.addExtension(
-                            new ASN1ObjectIdentifier(ext.getOid()),
-                            ext.isCritical(),
-                            ASN1Primitive.fromByteArray(ext.getValue()));
-                }
-            }
             X509CertificateHolder holder = builder.build(singer);
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             bout = new ByteArrayInputStream(holder.toASN1Structure() .getEncoded());
@@ -147,16 +133,16 @@ public class GenerateCertificateUtil {
             //私钥
             result.put("privateKey", privateKey.getEncoded());
             //证书有效开始时间
-            result.put("notBefore", format.format(notBefore).getBytes("utf-8"));
+            result.put("notBefore","2020-01-01 00:00:00".getBytes(StandardCharsets.UTF_8));
             //证书有效结束时间
-            result.put("notAfter", format.format(notAfter).getBytes("utf-8"));
+            result.put("notAfter","2120-01-01 00:00:00".getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (bout != null) {
                 try {
                     bout.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
@@ -169,7 +155,7 @@ public class GenerateCertificateUtil {
         private boolean critical;
         private byte[] value;
 
-        public String getOid() {
+        String getOid() {
             return oid;
         }
 
@@ -177,7 +163,7 @@ public class GenerateCertificateUtil {
             this.oid = oid;
         }
 
-        public boolean isCritical() {
+        boolean isCritical() {
             return critical;
         }
 
@@ -198,17 +184,17 @@ public class GenerateCertificateUtil {
         // CN: 名字与姓氏 OU : 组织单位名称
         // O ：组织名称 L : 城市或区域名称 E : 电子邮件
         // ST: 州或省份名称 C: 单位的两字母国-家代码
-        String issuerStr = "CN=jcb凭证,OU=研发部,O=jcb有限公司,C=CN,E=jcb@sina.com,L=北京,ST=北京";
-        String subjectStr = "CN=jcb有限公司,OU=用户,O=test,C=CN,E=jcb@sina.com,L=北京,ST=北京";
-        String certificateCRL = "https://jcb.cn";
+        String issuerStr = "CN=ROOTCA, OU=RootCA,L=BeiJing,ST=BJ,C=CN";
+        String subjectStr = "CN=KMSSERVER, OU=Server,L=BeiJing,ST=BJ,C=CN";
+        String certificateCRL = "https://com.cn";
         Map<String, byte[]> result = GenerateCertificateUtil.createCert("123456", issuerStr, subjectStr, certificateCRL);
         // 生成.p12
-        FileOutputStream outPutStream = new FileOutputStream("d:/keystore_jcb.p12");
+        FileOutputStream outPutStream = new FileOutputStream("d:/server.p12");
         outPutStream.write(result.get("keyStoreData"));
         outPutStream.flush();
         outPutStream.close();
         //生成.cer颁发给用户的证书
-         FileOutputStream fos = new FileOutputStream(new File("d:/zheng.cer"));
+         FileOutputStream fos = new FileOutputStream(new File("d:/client.cer"));
          fos.write(result.get("certificateData"));
          fos.flush();
          fos.close();
@@ -223,7 +209,6 @@ public class GenerateCertificateUtil {
     private static PublicKey getPubKey() {
         PublicKey publicKey = null;
         try {
-
             // 自己的公钥(测试)
             String pubKey ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCVRiDkEKXy/KBTe+UmkA+feq1zGWIgBxkgbz7aBJGb5+eMKKoiDRoEHzlGndwFKm4mQWNftuMOfNcogzYpGKSEfC7sqfBPDHsGPZixMWzL3J10zkMTWo6MDIXKKqMG1Pgeq1wENfJjcYSU/enYSZkg3rFTOaBSFId+rrPjPo7Y4wIDAQAB";
             java.security.spec.X509EncodedKeySpec bobPubKeySpec = new java.security.spec.X509EncodedKeySpec(
@@ -233,11 +218,7 @@ public class GenerateCertificateUtil {
             keyFactory = java.security.KeyFactory.getInstance("RSA");
             // 取公钥匙对象
             publicKey = keyFactory.generatePublic(bobPubKeySpec);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
         return publicKey;
@@ -247,7 +228,6 @@ public class GenerateCertificateUtil {
     /**
      * 字符串生成私钥对象
      *
-     * @return
      */
     private static PrivateKey getPrivateKey() {
         PrivateKey privateKey = null;
@@ -257,11 +237,7 @@ public class GenerateCertificateUtil {
             priPKCS8 = new PKCS8EncodedKeySpec(new BASE64Decoder().decodeBuffer(priKey));
             KeyFactory keyf = KeyFactory.getInstance("RSA");
             privateKey = keyf.generatePrivate(priPKCS8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         }
         return privateKey;

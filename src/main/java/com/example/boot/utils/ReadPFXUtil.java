@@ -15,8 +15,9 @@ public class ReadPFXUtil {
         // TODO Auto-generated method stub
         // final String KEYSTORE_FILE = "D:\ssl\111111.p12";
         // final String KEYSTORE_FILE = "C:\Users\Administrator\Desktop\C1259765000017_4002628187_SM2_SignCert.cer";
-        final String KEYSTORE_FILE = "C:\\Users\\janus\\Desktop\\server.p12";
-        final String KEYSTORE_PASSWORD = "123456";
+        final String KEYSTORE_FILE = "D:\\123.pfx";
+        //final String KEYSTORE_PASSWORD = "证书密码";
+        final String KEYSTORE_PASSWORD = "1";
         final String KEYSTORE_ALIAS = "alias";
         getCertDetail(KEYSTORE_PASSWORD, KEYSTORE_FILE);
     }

@@ -1,16 +1,19 @@
 package com.example.boot.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import org.bouncycastle.asn1.*;
+import org.springframework.util.Base64Utils;
+import sun.misc.BASE64Encoder;
+
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -26,9 +29,35 @@ import javax.net.ssl.X509TrustManager;
 public class CertUtil {
 
     public static void main(String[] args) {
-        getCertExpired("https://www.baidu.com/");
+        //String a = "UiywPhq+23IwQNPcaEahX5uUdcKBF4t4C4rb3jiGbsvXADMMAhgjfHbobEepSescOJXuPa+bL7V33UOfacNxvhG6crZKsvYx7tEUPi9WcPKg9xMaltfYPFrQYBlCF97C3F+hGlujMUI+t+haQfmK2A4A83PV8X6aO3UO96TzotVi1aeqC+E7ojtahCXvCY6ecLc1BI9X9jBC09+ZKpAxsd45twwL+wk0XsIFqT8WSY17m/1r0jXi8w3G2JzbrS+tAkpsqhrVyNmBfPpf6vX2Ej3Wo+tpe/SXyEyS5R46Vwy0f5dvVqzID8p2xIynCtsKRISH1YVeAXyLg1N33L4EQg==";
+       //System.out.println(a.getBytes().length);
+        // getCertExpired("https://www.baidu.com/");
         //getCertExpired("https://localhost:8443/test");
-        showCertInfo("D:\\three.cer");
+       showCertInfo("C:\\Users\\janus\\Desktop\\1.cer");
+        //System.out.println("2020-08-01".compareTo("2019-01-01"));
+
+    }
+
+    public static String readToString(File file) {
+        String encoding = "UTF-8";
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new String(filecontent, encoding);
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("The OS does not support " + encoding);
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static void getCertExpired(String httpsUrl) {
@@ -88,9 +117,9 @@ public class CertUtil {
     public static void showCertInfo(String filePath) {
         try {
             //读取证书文件
-
-            File file = new File("E:\\123.cer");
+            File file = new File(filePath);
             InputStream inStream = new FileInputStream(file);
+            System.out.println(readToString(file));
             //创建X509工厂类
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             //创建证书对象
@@ -116,21 +145,91 @@ public class CertUtil {
             System.out.println("证书拥有者:" + info);
             //获得证书颁发者信息
             info = oCert.getIssuerDN().getName();
-            System.out.println("证书颁发者:" + info);
+            System.out.println("证书颁发者:" + oCert.getBasicConstraints());
             //获得证书签名算法名称
             info = oCert.getSigAlgName();
             System.out.println("证书签名算法:" + info);
-
-
-            byte[] byt = oCert.getExtensionValue("1.2.86.11.7.9");
-            String strExt = new String(byt);
-            System.out.println("证书扩展域:" + strExt);
-            byt = oCert.getExtensionValue("1.2.86.11.7.1.8");
-            String strExt2 = new String(byt);
-            System.out.println("证书扩展域2:" + strExt2);
+            List<Map<String,String>> mapList = new ArrayList<>();
+            Map<String,String> tempMap = new HashMap<>();
+            tempMap.put("2.5.29.14","Subject Key Identifier");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.15","Key Usage");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.16","Private Key Usage Period");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.17","Subject Alternative Name");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.18","Issuer Alternative Name");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.19","Basic Constraints");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.20","CRL Number");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.21","Reason code");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.23","Hold Instruction Code");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.24","Invalidity Date");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.27","Delta CRL indicator");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.28","Issuing Distribution Point");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.29","Certificate Issuer");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.30","Name Constraints");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.31","CRL Distribution Points");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.32","Certificate Policies");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.33","Policy Mappings");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.35","Authority Key Identifier");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.36","Policy Constraints");
+            mapList.add(tempMap);
+            tempMap = new HashMap<>();
+            tempMap.put("2.5.29.37","Extended Key Usage");
+            mapList.add(tempMap);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("解析证书出错！");
         }
+    }
+
+    private static Object ByteToObject(byte[] bytes) {
+        Object obj = null;
+        try {
+            // bytearray to object
+            ByteArrayInputStream bi = new ByteArrayInputStream(bytes);
+            ObjectInputStream oi = new ObjectInputStream(bi);
+
+            obj = oi.readObject();
+            bi.close();
+            oi.close();
+        } catch (Exception e) {
+            System.out.println("translation" + e.getMessage());
+            e.printStackTrace();
+        }
+        return obj;
     }
 }

@@ -20,22 +20,50 @@ public class ReadP12Cert {
      * @param args
      */
     public static void main(String[] args) {
-        String name = "symTemplateName";
-        if (name.contains(".") || name.contains("_")){
-            System.out.println(name);
-        }
-        StringBuilder result = new StringBuilder();
-        if (name != null && name.length() > 0) {
-            result.append(name.substring(0, 1).toLowerCase());
-            // 循环处理其余字符
-            for (int i = 1; i < name.length(); i++) {
-                String s = name.substring(i, i + 1);
-                if (s.equals(s.toUpperCase()) && !Character.isDigit(s.charAt(0))) {
-                    result.append("_");
-                }
-                result.append(s.toLowerCase());
+        // TODO Auto-generated method stub
+        //final String KEYSTORE_FILE = "证书路径";
+        final String KEYSTORE_FILE = "D:\\123.pfx";
+        //final String KEYSTORE_PASSWORD = "证书密码";
+        final String KEYSTORE_PASSWORD = "1";
+        final String KEYSTORE_ALIAS = "alias";
+        try {
+            KeyStore ks = KeyStore.getInstance("PKCS12");
+            FileInputStream fis = new FileInputStream(KEYSTORE_FILE);
+            // If the keystore password is empty(""), then we have to set
+            // to null, otherwise it won't work!!!
+            char[] nPassword = null;
+            if ((KEYSTORE_PASSWORD == null) || KEYSTORE_PASSWORD.trim().equals("")) {
+                nPassword = null;
+            } else {
+                nPassword = KEYSTORE_PASSWORD.toCharArray();
             }
+            ks.load(fis, nPassword);
+            fis.close();
+            System.out.println("keystore type=" + ks.getType());
+            // Now we loop all the aliases, we need the alias to get keys.
+            // It seems that this value is the "Friendly name" field in the
+            // detals tab <-- Certificate window <-- view <-- Certificate
+            // Button <-- Content tab <-- Internet Options <-- Tools menu
+            // In MS IE 6.
+            Enumeration enum1 = ks.aliases();
+            String keyAlias = null;
+            // we are readin just one certificate.
+            if (enum1.hasMoreElements()){
+                keyAlias = (String) enum1.nextElement();
+                System.out.println("alias=[" + keyAlias + "]");
+            }
+            // Now once we know the alias, we could get the keys.
+            System.out.println("is key entry=" + ks.isKeyEntry(keyAlias));
+            PrivateKey prikey = (PrivateKey) ks.getKey(keyAlias, nPassword);
+            Certificate cert = ks.getCertificate(keyAlias);
+            PublicKey pubkey = cert.getPublicKey();
+            System.out.println("cert class = " + cert.getClass().getName());
+            System.out.println("cert = " + cert);
+            System.out.println("public key = " + pubkey);
+            System.out.println("private key = " + prikey);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        System.out.println(result.toString());
     }
+
 }
