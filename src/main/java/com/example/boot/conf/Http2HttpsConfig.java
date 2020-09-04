@@ -18,6 +18,7 @@ public class Http2HttpsConfig {
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
         TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory(){//1
+            @Override
             protected void postProcessContext(Context context) {
                 SecurityConstraint securityConstraint = new SecurityConstraint();
                 securityConstraint.setUserConstraint("CONFIDENTIAL");

@@ -24,8 +24,9 @@ public class HelloWorldController {
     private Resource resource;
 
     @ResponseBody
-    @GetMapping("/test")
+    @PostMapping("/dbe/msqte/generate/")
     public String test() {
+        System.out.println("------------------***********-------------------------");
         return "hello";
     }
 
