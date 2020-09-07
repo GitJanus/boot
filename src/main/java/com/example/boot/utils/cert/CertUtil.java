@@ -1,12 +1,7 @@
-package com.example.boot.utils;
-
-import org.bouncycastle.asn1.*;
-import org.springframework.util.Base64Utils;
-import sun.misc.BASE64Encoder;
+package com.example.boot.utils.cert;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;

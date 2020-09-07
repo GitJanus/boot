@@ -1,4 +1,4 @@
-package com.example.boot.utils;
+package com.example.boot.utils.cert;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;

@@ -1,4 +1,4 @@
-package com.example.boot.utils;
+package com.example.boot.utils.cert;
 
 public class ByteConvertUtil {
     public static String bytesToHexString(byte[] bArr) {
