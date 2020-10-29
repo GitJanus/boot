@@ -22,9 +22,9 @@ public class ReadP12Cert {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         //final String KEYSTORE_FILE = "证书路径";
-        final String KEYSTORE_FILE = "D:\\123.pfx";
+        final String KEYSTORE_FILE = "D:\\server.p12";
         //final String KEYSTORE_PASSWORD = "证书密码";
-        final String KEYSTORE_PASSWORD = "1";
+        final String KEYSTORE_PASSWORD = "123456";
         final String KEYSTORE_ALIAS = "alias";
         try {
             KeyStore ks = KeyStore.getInstance("PKCS12");

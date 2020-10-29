@@ -204,7 +204,7 @@ public class ZipUtil {
     public static void main(String[] args) {
         try {
 //			zipFile("M:\\ZIP\\test\\tempZIP", "M:\\ZIP\\test\\bbc.zip");
-            unzipFile("M:\\ZIP\\test\\bbc.zip", "M:\\ZIP\\test\\bb\\");
+            unzipFile("D:\\keystore\\jar.zip", "M:\\ZIP\\test\\bb\\");
         } catch (IOException e) {
             e.printStackTrace();
         }
